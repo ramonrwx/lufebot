@@ -30,7 +30,7 @@ class Color(Module):
         self.bot = bot
 
     async def cog_check(self, ctx: Context):
-        return ctx.author.name in ['brunitica', 'ramonrwx']
+        return ctx.author.name in self.bot.owners
 
     @command(name='color', aliases=['cor'])
     async def _color(self, ctx: Context, color: str | None):
@@ -62,5 +62,5 @@ class Color(Module):
 
 
 def prepare(bot: Bot):
-    logger.info('módulo [color] carregado com successo')
     bot.add_cog(Color(bot))
+    logger.info('módulo [color] carregado com successo')

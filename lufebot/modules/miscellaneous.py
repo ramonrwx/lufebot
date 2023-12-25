@@ -16,7 +16,11 @@ class Miscellaneous(Module):
         self.bot = bot
 
     async def cog_check(self, ctx: Context):
-        return ctx.author.name in ['brunitica', 'ramonrwx']
+        return ctx.author.name in self.bot.owners
+
+    async def cog_command_error(self, ctx: Context, error: Exception):
+        logger.error(error)
+        await ctx.reply('você não tem permissão para usar esse comando!')
 
     @command(name='date', aliases=['data', 'dia', 'today'])
     async def date(self, ctx: Context):
@@ -32,11 +36,11 @@ class Miscellaneous(Module):
             try:
                 response = await client.get(url)
                 response.raise_for_status()
-                await ctx.reply(response.text.strip())
+                await ctx.send(response.text.strip())
             except httpx.HTTPStatusError:
                 await ctx.reply('não foi possível saber o clima deste local.')
 
 
 def prepare(bot: Bot):
-    logger.info('módulo [miscellaneous] carregado com successo')
     bot.add_cog(Miscellaneous(bot))
+    logger.info('módulo [miscellaneous] carregado com successo')

@@ -7,9 +7,14 @@ from loguru import logger
 from twitchio import Message
 from twitchio.ext.commands import Bot
 from twitchio.ext.commands import Context
+from twitchio.ext.commands.errors import ArgumentParsingFailed
+from twitchio.ext.commands.errors import CheckFailure
+from twitchio.ext.commands.errors import CommandNotFound
+from twitchio.ext.commands.errors import MissingRequiredArgument
 
 TWITCH_ACCESS_TOKEN = os.getenv('TWITCH_ACCESS_TOKEN')
 TWITCH_INIT_CHANNELS = os.getenv('TWITCH_INIT_CHANNELS')
+LUFEBOT_OWNERS = os.getenv('LUFEBOT_OWNERS')
 
 
 class Lufe(Bot):
@@ -18,6 +23,8 @@ class Lufe(Bot):
             module.stem for module in Path('./lufebot/modules').glob('*.py')
         ]
         self.token = TWITCH_ACCESS_TOKEN
+        self.owners = [owner for owner in LUFEBOT_OWNERS.split(',')]
+
         super().__init__(
             token=TWITCH_ACCESS_TOKEN,
             prefix='!',
@@ -30,7 +37,24 @@ class Lufe(Bot):
         logger.info(f'{self.nick} se conectou a twitch')
 
     async def event_command_error(self, ctx: Context, error: Exception) -> None:
-        logger.error(f'{ctx.channel.name} -> {error}')
+        if isinstance(error, CommandNotFound):
+            return
+
+        elif isinstance(error, ArgumentParsingFailed):
+            logger.error(error.message)
+
+        elif isinstance(error, MissingRequiredArgument):
+            logger.error(error)
+            await ctx.reply(f'ops, está faltando o argumento: {error.name}')
+
+        elif isinstance(error, CheckFailure):
+            logger.error(error)
+            await ctx.reply(
+                'esse comando está desativado ou você não tem permissão para usar!',
+            )
+
+        else:
+            logger.error(error)
 
     async def event_message(self, message: Message) -> None:
         if message.echo:
