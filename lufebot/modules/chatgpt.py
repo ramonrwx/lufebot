@@ -87,4 +87,4 @@ class ChatGPT(Module):
 
 def prepare(bot: Bot):
     bot.add_cog(ChatGPT(bot))
-    logger.info('módulo [chatgpt] carregado com successo')
+    logger.success('módulo [chatgpt] carregado com successo')

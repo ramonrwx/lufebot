@@ -63,4 +63,4 @@ class Color(Module):
 
 def prepare(bot: Bot):
     bot.add_cog(Color(bot))
-    logger.info('módulo [color] carregado com successo')
+    logger.success('módulo [color] carregado com successo')

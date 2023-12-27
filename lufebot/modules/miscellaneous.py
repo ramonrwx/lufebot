@@ -43,4 +43,4 @@ class Miscellaneous(Module):
 
 def prepare(bot: Bot):
     bot.add_cog(Miscellaneous(bot))
-    logger.info('módulo [miscellaneous] carregado com successo')
+    logger.success('módulo [miscellaneous] carregado com successo')

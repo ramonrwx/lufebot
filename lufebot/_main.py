@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import sys
 from pathlib import Path
 
 from loguru import logger
@@ -36,7 +37,7 @@ class Lufe(Bot):
         )
 
     async def event_ready(self) -> None:
-        logger.info(f'{self.nick} se conectou a twitch')
+        logger.success(f'{self.nick} se conectou a twitch')
 
     async def event_command_error(self, ctx: Context, error: Exception) -> None:
         if isinstance(error, CommandNotFound):
@@ -84,9 +85,11 @@ class Lufe(Bot):
 
     def setup_modules(self) -> None:
         for module in self.modules:
-            logger.info(f'carregando módulo [{module}]')
             self.load_module(f'lufebot.modules.{module}')
 
     def run(self) -> None:
+        log_format = '<green>{time:YYYY-MM-DD HH:mm:ss} </green> | <level>{level: <2}</level> | <level>{message}</level>'
+        logger.remove()
+        logger.add(sys.stdout, format=log_format)
         self.setup_modules()
         super().run()

@@ -43,4 +43,4 @@ class Admin(Module):
 
 def prepare(bot: Bot):
     bot.add_cog(Admin(bot))
-    logger.info('módulo [admin] carregado com successo')
+    logger.success('módulo [admin] carregado com successo')
