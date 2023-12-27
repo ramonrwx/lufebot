@@ -13,6 +13,7 @@ from twitchio.ext.commands.errors import CheckFailure
 from twitchio.ext.commands.errors import CommandNotFound
 from twitchio.ext.commands.errors import MissingRequiredArgument
 
+from lufebot._database import DefaultCommand
 from lufebot._database import get_default_command
 
 TWITCH_ACCESS_TOKEN = os.getenv('TWITCH_ACCESS_TOKEN')
@@ -28,14 +29,19 @@ class Lufe(Bot):
         self.token = TWITCH_ACCESS_TOKEN
         self.owners = [owner for owner in LUFEBOT_OWNERS.split(',')]
         self.hidden_cmds = ['desativar', 'ativar', 'cor', 'coraleatoria']
+        init_channels = [channel for channel in TWITCH_INIT_CHANNELS.split(',')]
 
         super().__init__(
             token=TWITCH_ACCESS_TOKEN,
             prefix='!',
-            initial_channels=[
-                channel for channel in TWITCH_INIT_CHANNELS.split(',')
-            ],
+            initial_channels=init_channels,
         )
+
+        try:
+            for channel in init_channels:
+                DefaultCommand.get_or_create(channel=channel, commands={})
+        except Exception as e:
+            logger.error(e)
 
     async def event_ready(self) -> None:
         logger.success(f'{self.nick} se conectou a twitch')
@@ -69,12 +75,14 @@ class Lufe(Bot):
         channel_commands = get_default_command(channel=ctx.channel.name)
         disabled_cmds = [
             cmd
-            for cmd, enabled in channel_commands.items() if not enabled
+            for cmd, enabled in channel_commands.items()
+            if not enabled
         ]
 
         commands = [
             cmd
-            for cmd in self.commands.keys() if cmd not in self.hidden_cmds
+            for cmd in self.commands.keys()
+            if cmd not in self.hidden_cmds
         ]
 
         logger.info(
