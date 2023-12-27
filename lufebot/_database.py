@@ -28,12 +28,12 @@ class DefaultCommand(BaseModel):
     commands = JSONField()
 
 
-def get_default_command(channel: str, command: str):
+def get_default_command(channel: str):
     default_command = DefaultCommand.get_or_none(channel=channel)
     if default_command is None:
         raise ValueError()
     else:
-        return default_command.commands.get(command, None)
+        return default_command.commands
 
 
 def set_default_command(channel: str, command: str, value: bool):

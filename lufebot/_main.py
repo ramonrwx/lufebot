@@ -12,6 +12,8 @@ from twitchio.ext.commands.errors import CheckFailure
 from twitchio.ext.commands.errors import CommandNotFound
 from twitchio.ext.commands.errors import MissingRequiredArgument
 
+from lufebot._database import get_default_command
+
 TWITCH_ACCESS_TOKEN = os.getenv('TWITCH_ACCESS_TOKEN')
 TWITCH_INIT_CHANNELS = os.getenv('TWITCH_INIT_CHANNELS')
 LUFEBOT_OWNERS = os.getenv('LUFEBOT_OWNERS')
@@ -61,9 +63,22 @@ class Lufe(Bot):
             return
 
         ctx = await self.get_context(message)
+
+        commands = get_default_command(channel=ctx.channel.name)
+        channel_disabled_cmds = [command for command, value in commands.items() if not value]
+
+        bot_commands = self.commands.keys()
+        private_cmds = ['coraleatoria', 'cor', 'ativar', 'desativar']
+        cmds = [cmd for cmd in bot_commands if cmd not in private_cmds]
+
         logger.info(
-            f'[{ctx.author.name}] em [{ctx.channel.name}]: {message.content}',
+            f'[{message.author.name}] em [{message.channel.name}]: {message.content}',
         )
+
+        if message.content.startswith('!') \
+                and ctx.command.name in cmds \
+                and ctx.command.name in channel_disabled_cmds:
+            return
 
         await self.handle_commands(message)
 

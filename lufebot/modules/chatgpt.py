@@ -54,8 +54,6 @@ class ChatGPT(Module):
             response = await _chat_completion(system_msg, user_msg)
             await ctx.reply(response)
 
-        await self.bot.handle_commands(message)
-
     @command(name='tellme', aliases=['mediga', 'meconte'])
     async def _tellme(self, ctx: Context, *, user_input: str | None):
         system_msg = '''\
@@ -72,7 +70,7 @@ class ChatGPT(Module):
         response = await _chat_completion(system_msg, user_input)
         await ctx.reply(response)
 
-    @command(name='translate', aliases=['traduz', 'traduzir'])
+    @command(name='traduzir', aliases=['translate', 'tradutor'])
     async def _translate(self, ctx: Context, *, text: str):
         system_msg = '''\
         You will act as a translator between portuguese and the language identified

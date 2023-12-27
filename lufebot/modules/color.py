@@ -32,7 +32,7 @@ class Color(Module):
     async def cog_check(self, ctx: Context):
         return ctx.author.name in self.bot.owners
 
-    @command(name='color', aliases=['cor'])
+    @command(name='cor', aliases=['color'])
     async def _color(self, ctx: Context, color: str | None):
         if color is None or color not in TWITCH_COLORS:
             await ctx.send(
@@ -47,8 +47,8 @@ class Color(Module):
             await ctx.reply(f'cor alterada para: {color}')
 
     @command(
-        name='randomcolor',
-        aliases=['rngcolor', 'rngcor', 'rngc', 'randcolor'],
+        name='coraleatoria',
+        aliases=['rngcolor', 'rngcor', 'rngc', 'randcolor', 'randomcolor'],
     )
     async def _rand_color(self, ctx: Context):
         color = _get_random_color()

@@ -22,13 +22,13 @@ class Miscellaneous(Module):
         logger.error(error)
         await ctx.reply('você não tem permissão para usar esse comando!')
 
-    @command(name='date', aliases=['data', 'dia', 'today'])
+    @command(name='data', aliases=['date', 'dia', 'today'])
     async def date(self, ctx: Context):
         today = time.strftime('%d/%m/%Y')
         await ctx.reply(f'hoje é: {today}')
 
-    @command(name='weather', aliases=['clima', 'tempo'])
-    async def weather(self, ctx: Context, *, local: str = 'Brasil'):
+    @command(name='clima', aliases=['weather', 'tempo'])
+    async def _weather(self, ctx: Context, *, local: str = 'Brasil'):
         local_encoded = parse.quote(local)
         url = f'https://wttr.in/{local_encoded}?format=4'
 
