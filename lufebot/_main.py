@@ -28,7 +28,7 @@ class Lufe(Bot):
         ]
         self.token = TWITCH_ACCESS_TOKEN
         self.owners = [owner for owner in LUFEBOT_OWNERS.split(',')]
-        self.hidden_cmds = ['desativar', 'ativar', 'cor', 'coraleatoria']
+        self.hidden_cmds = ['ativar', 'desativar', 'cor', 'coraleatoria']
         init_channels = [channel for channel in TWITCH_INIT_CHANNELS.split(',')]
 
         super().__init__(
@@ -40,8 +40,8 @@ class Lufe(Bot):
         try:
             for channel in init_channels:
                 DefaultCommand.get_or_create(channel=channel, commands={})
-        except Exception as e:
-            logger.error(e)
+        except Exception:
+            pass
 
     async def event_ready(self) -> None:
         logger.success(f'{self.nick} se conectou a twitch')

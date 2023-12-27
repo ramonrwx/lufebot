@@ -11,6 +11,8 @@ from twitchio.ext.commands import Cog as Module
 from twitchio.ext.commands import command
 from twitchio.ext.commands import Context
 
+from lufebot._database import get_default_command
+
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 OPENAI_MODEL = os.getenv('OPENAI_MODEL')
 
@@ -35,15 +37,29 @@ class ChatGPT(Module):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    # async def cog_check(self, ctx: Context):
-    #     return ctx.author.name in self.bot.owners
-
     @Module.event()
     async def event_message(self, message: Message) -> None:
         if message.echo:
             return
 
         ctx = await self.bot.get_context(message)
+
+        channel_commands = get_default_command(channel=ctx.channel.name)
+        disabled_cmds = [
+            cmd
+            for cmd, enabled in channel_commands.items()
+            if not enabled
+        ]
+
+        commands = [
+            cmd
+            for cmd in self.bot.commands.keys()
+            if cmd not in self.bot.hidden_cmds
+        ]
+
+        if 'chatgpt' in commands and 'chatgpt' in disabled_cmds:
+            return
+
         if f'@{self.bot.nick}' in ctx.message.content.lower():
             system_msg = '''
                 I want you to answer only in portuguese with 90 characters.
@@ -53,6 +69,10 @@ class ChatGPT(Module):
 
             response = await _chat_completion(system_msg, user_msg)
             await ctx.reply(response)
+
+    @command(name='chatgpt')
+    async def _chatgpt(self, ctx: Context):
+        logger.debug('uma gambiarra')
 
     @command(name='tellme', aliases=['mediga', 'meconte'])
     async def _tellme(self, ctx: Context, *, user_input: str | None):
