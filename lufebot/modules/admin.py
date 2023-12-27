@@ -18,25 +18,33 @@ class Admin(Module):
 
     @command(name='ativar', aliases=['enable', 'ligar'])
     async def _enable(self, ctx: Context, command: str | None):
-        commands = self.bot.commands.keys()
-        private_cmds = ['coraleatoria', 'cor', 'ativar', 'desativar']
-        cmds = [cmd for cmd in commands if cmd not in private_cmds]
+        commands = [
+            cmd
+            for cmd in self.bot.commands.keys()
+            if cmd not in self.bot.hidden_cmds
+        ]
 
         if command is None:
-            await ctx.send(f'comandos disponivéis para ativar: {", ".join(cmds)}')
-        elif command in cmds:
+            await ctx.send(
+                f'comandos disponivéis para ativar: {", ".join(commands)}',
+            )
+        elif command in commands:
             set_default_command(ctx.channel.name, command, True)
             await ctx.reply(f'comando {command} foi ativado no canal!')
 
     @command(name='desativar', aliases=['disable', 'desligar'])
     async def _disable(self, ctx: Context, command: str | None):
-        commands = self.bot.commands.keys()
-        private_cmds = ['coraleatoria', 'cor', 'ativar', 'desativar']
-        cmds = [cmd for cmd in commands if cmd not in private_cmds]
+        commands = [
+            cmd
+            for cmd in self.bot.commands.keys()
+            if cmd not in self.bot.hidden_cmds
+        ]
 
         if command is None:
-            await ctx.send(f'comandos disponivéis para desativar: {", ".join(cmds)}')
-        elif command in cmds:
+            await ctx.send(
+                f'comandos disponivéis para desativar: {", ".join(commands)}',
+            )
+        elif command in commands:
             set_default_command(ctx.channel.name, command, False)
             await ctx.reply(f'comando {command} foi desativado no canal!')
 

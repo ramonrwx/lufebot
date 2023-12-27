@@ -27,6 +27,7 @@ class Lufe(Bot):
         ]
         self.token = TWITCH_ACCESS_TOKEN
         self.owners = [owner for owner in LUFEBOT_OWNERS.split(',')]
+        self.hidden_cmds = ['desativar', 'ativar', 'cor', 'coraleatoria']
 
         super().__init__(
             token=TWITCH_ACCESS_TOKEN,
@@ -65,20 +66,24 @@ class Lufe(Bot):
 
         ctx = await self.get_context(message)
 
-        commands = get_default_command(channel=ctx.channel.name)
-        channel_disabled_cmds = [command for command, value in commands.items() if not value]
+        channel_commands = get_default_command(channel=ctx.channel.name)
+        disabled_cmds = [
+            cmd
+            for cmd, enabled in channel_commands.items() if not enabled
+        ]
 
-        bot_commands = self.commands.keys()
-        private_cmds = ['coraleatoria', 'cor', 'ativar', 'desativar']
-        cmds = [cmd for cmd in bot_commands if cmd not in private_cmds]
+        commands = [
+            cmd
+            for cmd in self.commands.keys() if cmd not in self.hidden_cmds
+        ]
 
         logger.info(
             f'[{message.author.name}] em [{message.channel.name}]: {message.content}',
         )
 
         if message.content.startswith('!') \
-                and ctx.command.name in cmds \
-                and ctx.command.name in channel_disabled_cmds:
+                and ctx.command.name in commands  \
+                and ctx.command.name in disabled_cmds:
             return
 
         await self.handle_commands(message)
