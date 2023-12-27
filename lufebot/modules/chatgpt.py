@@ -88,7 +88,7 @@ class ChatGPT(Module):
         I want you to answer only in portuguese with 90 characters.
         '''
         response = await _chat_completion(system_msg, user_input)
-        await ctx.reply(response)
+        await ctx.send(f'!tts {response}')
 
     @command(name='traduzir', aliases=['translate', 'tradutor'])
     async def _translate(self, ctx: Context, *, text: str):
