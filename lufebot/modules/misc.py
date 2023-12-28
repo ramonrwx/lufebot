@@ -15,13 +15,6 @@ class Miscellaneous(Module):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    async def cog_check(self, ctx: Context):
-        return ctx.author.name in self.bot.owners
-
-    async def cog_command_error(self, ctx: Context, error: Exception):
-        logger.error(error)
-        await ctx.reply('você não tem permissão para usar esse comando!')
-
     @command(name='data', aliases=['date', 'dia', 'today'])
     async def date(self, ctx: Context):
         today = time.strftime('%d/%m/%Y')
