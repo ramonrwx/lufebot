@@ -37,11 +37,11 @@ class Lufe(Bot):
             initial_channels=init_channels,
         )
 
-        try:
-            for channel in init_channels:
+        for channel in init_channels:
+            try:
                 DefaultCommand.get_or_create(channel=channel, commands={})
-        except Exception:
-            pass
+            except Exception:
+                continue
 
     async def event_ready(self) -> None:
         logger.success(f'{self.nick} se conectou a twitch')
