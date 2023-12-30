@@ -51,13 +51,7 @@ class ChatGPT(Module):
             if not enabled
         ]
 
-        commands = [
-            cmd
-            for cmd in self.bot.commands.keys()
-            if cmd not in self.bot.hidden_cmds
-        ]
-
-        if 'chatgpt' in commands and 'chatgpt' in disabled_cmds:
+        if 'chatgpt' in disabled_cmds:
             return
 
         if f'@{self.bot.nick}' in ctx.message.content.lower():
